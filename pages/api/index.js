@@ -13,10 +13,14 @@ export default async function handler(req, res) {
     switch (method) {
         case 'GET':
             try {
-                // const query = `/${req.body.query}/i`;
-                // console.log(query)
-                // const data = await SearchData.find({ name: { $regex: query } });
-                const data = await SearchData.find({ name: { $regex: /sha/i } });
+                const data = await SearchData.find(
+                    {
+                        '$or': [
+                            { name: { $regex: req.body.query } },
+                            { description: { $regex: req.body.query } }
+                        ]
+                    }
+                );
                 res.status(200).json({ success: true, data });
             } catch (error) {
                 res.status(400).json({ success: false })
